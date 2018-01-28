@@ -20,6 +20,18 @@ RUN apt-get update  && apt-get install -y --no-install-recommends apt-utils && a
 	&& localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 ENV LANG en_US.utf8
 
+# install java8
+RUN echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" | \
+  sudo tee /etc/apt/sources.list.d/webupd8team-java.list
+RUN echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" | \
+  sudo tee -a /etc/apt/sources.list.d/webupd8team-java.list
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886
+RUN apt-get update
+
+RUN echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections
+RUN echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 seen true" | debconf-set-selections
+RUN apt-get install -y oracle-java8-installer
+
 # pdfgen dependency
 RUN apt-get update && apt-get install -y libgssapi-krb5-2 && rm -rf /var/lib/apt/lists/*
 
